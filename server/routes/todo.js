@@ -8,10 +8,10 @@ router.post('/create', authenticateUser, createTodo);
 
 router.get('/todos', authenticateUser, getTodos);
 
-router.get('/todos/:id', authenticateUser, todoDetails);
+router.get('/details/:id', authenticateUser, todoDetails);
 
-router.put('/todos/:id', authenticateUser, updateTodo);
+router.put('/update/:id', authenticateUser, updateTodo);
 
-router.delete('/todos/:id', authenticateUser, deleteTodo);
+router.delete('/delete/:id', authenticateUser, deleteTodo);
 
 export default router;

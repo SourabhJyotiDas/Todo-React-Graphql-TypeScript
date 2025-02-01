@@ -55,7 +55,7 @@ export const getTodos = async (req, res) => {
 
 export const todoDetails = async (req, res) => {
    try {
-      const { id } = req.params;
+      const {id}  = req.params;
 
       // Find the todo by id and ensure it belongs to the authenticated user
       const todo = await Todo.findOne({ _id: id, user: req.user._id });
