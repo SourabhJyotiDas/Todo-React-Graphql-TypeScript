@@ -3,7 +3,7 @@ import { Todo } from "../models/todo.js";
 
 export const createTodo = async (req, res) => {
    try {
-      const { title, description, status, dueDate } = req.body;
+      const { title, description } = req.body;
 
       if (!title) {
          return res.status(400).json({
@@ -16,8 +16,7 @@ export const createTodo = async (req, res) => {
          user: req.user._id,  // Attach the authenticated user's ID
          title,
          description,
-         status: status || 'pending',  // Default status is 'pending' if not provided
-         dueDate,
+         dueDate:new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
 
       await newTodo.save();

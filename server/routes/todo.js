@@ -4,7 +4,7 @@ import { createTodo, getTodos, updateTodo, deleteTodo, todoDetails } from '../co
 
 const router = express.Router();
 
-router.post('/todos', authenticateUser, createTodo);
+router.post('/create', authenticateUser, createTodo);
 
 router.get('/todos', authenticateUser, getTodos);
 
