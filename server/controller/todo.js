@@ -1,5 +1,18 @@
 import { Todo } from "../models/todo.js";
 
+export const getTodos = async (parent, { id }) => {
+   try {
+      const todos = await Todo.find({ user: id }).populate("user")
+      return todos;
+   } catch (error) {
+      return res.status(500).json({
+         success: false,
+         message: 'Something went wrong',
+         error: error.message,
+      });
+   }
+};
+
 
 export const createTodo = async (req, res) => {
    try {
@@ -16,7 +29,7 @@ export const createTodo = async (req, res) => {
          user: req.user._id,  // Attach the authenticated user's ID
          title,
          description,
-         dueDate:new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+         dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
 
       await newTodo.save();
@@ -35,27 +48,12 @@ export const createTodo = async (req, res) => {
    }
 };
 
-export const getTodos = async (req, res) => {
-   try {
-      const todos = await Todo.find({ user: req.user._id });
 
-      return res.status(200).json({
-         success: true,
-         todos,
-      });
-   } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
-   }
-};
 
 
 export const todoDetails = async (req, res) => {
    try {
-      const {id}  = req.params;
+      const { id } = req.params;
 
       // Find the todo by id and ensure it belongs to the authenticated user
       const todo = await Todo.findOne({ _id: id, user: req.user._id });

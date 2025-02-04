@@ -2,6 +2,21 @@ import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 import { User } from "../models/user.js";
 
+
+export const getAllUsers = async () => {
+   try {
+
+      const users = await User.find({});
+      return users;
+
+   } catch (error) {
+      return res.status(500).json({
+         success: false,
+         message: error.message,
+      });
+   }
+};
+
 export const register = async (req, res, next) => {
    try {
       const { username, password, email } = req.body;

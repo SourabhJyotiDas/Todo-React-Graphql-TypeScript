@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema({
       enum: ['active', 'inactive', 'suspended'],
       default: 'active',
    },
+   verified: {
+      type: Boolean
+   }
 }, {
    timestamps: true, // Adds createdAt and updatedAt automatically
 });
