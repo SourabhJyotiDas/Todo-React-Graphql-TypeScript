@@ -8,7 +8,7 @@ export const getAllUsers = async (parent, args, { req, res }) => {
 
    try {
 
-      // console.log(req.user)
+      if (!req.user) throw new Error("unauthorised: Login first");
 
       const users = await User.find({});
       return users;
@@ -60,32 +60,22 @@ export const register = async (parent, args, { req, res }) => {
 };
 
 
-export const login = async (req, res, next) => {
+export const login = async (parent, args, { req, res }) => {
    try {
-      const { password, email } = req.body;
+      const { password, email } = args;
 
       if (!password || !email) {
-         return res.status(400).json({
-            success: false,
-            message: 'Please fill all fields',
-         });
+         throw new Error("fields required");
       }
 
       const user = await User.findOne({ email }).select('+password');
-      if (!user) {
-         return res.status(404).json({
-            success: false,
-            message: 'User not found',
-         });
-      }
+
+      if (user) throw new Error("User already exist");
 
       const isPasswordMatching = await bcrypt.compare(password, user.password);
 
       if (!isPasswordMatching) {
-         return res.status(401).json({
-            success: false,
-            message: 'Incorrect password',
-         });
+         throw new Error("Invalid credentials");
       }
 
       // Generate a JWT token
@@ -101,39 +91,24 @@ export const login = async (req, res, next) => {
          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       });
 
-      return res.status(200).json({
-         success: true,
+      return ({
          message: 'Login successful',
          user,
       });
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
-export const userDetails = (req, res) => {
+
+export const userDetails = (parent, args, { req, res }) => {
    try {
       // Ensure `req.user` is available
-      if (!req.user) {
-         return res.status(401).json({
-            success: false,
-            message: 'Unauthorized: No user details found',
-         });
-      }
+      if (!req.user) throw new Error("unauthorised: Login first");
 
-      return res.status(200).json({
-         success: true,
-         user: req.user
-      });
+      return (req.user)
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
@@ -148,31 +123,22 @@ export const logout = (parent, args, { req, res }) => {
          sameSite: 'strict', // Prevent CSRF attacks
       });
 
-      return res.status(200).json({
-         success: true,
-         message: 'Logged out successfully',
-      });
+      return ('Logged out successfully')
+
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
 
 
-export const updateUserDetails = async (req, res) => {
+export const updateUserDetails = async (parent, args, { req, res }) => {
    try {
-      const { username, phone, status } = req.body;
+      const { username, phone, status } = args;
 
       // Ensure user is authenticated (req.user is set by `authMiddleware` middleware)
       if (!req.user) {
-         return res.status(401).json({
-            success: false,
-            message: 'Unauthorized: No user found',
-         });
+         throw new Error("unauthorised: Login first");
       }
 
       // Update user fields
@@ -183,23 +149,13 @@ export const updateUserDetails = async (req, res) => {
       );
 
       if (!updatedUser) {
-         return res.status(404).json({
-            success: false,
-            message: 'User not found',
-         });
+         throw new Error("User not found.");
       }
 
-      return res.status(200).json({
-         success: true,
-         message: 'User details updated successfully',
-         updatedUser
-      });
+      return updatedUser;
+
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
@@ -208,22 +164,14 @@ export const updatePassword = async (req, res) => {
    try {
       const { oldPassword, newPassword } = req.body;
 
-      if (!req.user) {
-         return res.status(401).json({
-            success: false,
-            message: 'Unauthorized: No user found',
-         });
-      }
+      if (!req.user) throw new Error("unauthorised: Login first");
 
       const user = await User.findById(req.user._id).select('+password'); // Include password field
 
       const isPasswordMatching = await bcrypt.compare(oldPassword, user.password);
 
       if (!isPasswordMatching) {
-         return res.status(400).json({
-            success: false,
-            message: 'Old password is incorrect',
-         });
+         throw new Error("old password is incorrect");
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -232,37 +180,25 @@ export const updatePassword = async (req, res) => {
       user.password = hashedPassword;
       await user.save();
 
-      return res.status(200).json({
+      return ({
          success: true,
          message: 'Password updated successfully',
       });
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
 
 export const deleteAccount = async (req, res) => {
    try {
-      if (!req.user) {
-         return res.status(401).json({
-            success: false,
-            message: 'Unauthorized: No user found',
-         });
-      }
+      if (!req.user) throw new Error("unauthorised: Login first");
 
       // Delete the user account from the database
       const deletedUser = await User.findByIdAndDelete(req.user._id);
 
       if (!deletedUser) {
-         return res.status(404).json({
-            success: false,
-            message: 'User not found',
-         });
+         throw new Error("User not found or Already deleted");
       }
 
       res.clearCookie('token', {
@@ -271,15 +207,11 @@ export const deleteAccount = async (req, res) => {
          sameSite: 'strict', // Prevent CSRF attacks
       });
 
-      return res.status(200).json({
+      return ({
          success: true,
          message: 'Account deleted successfully',
       });
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error.message);
    }
 };

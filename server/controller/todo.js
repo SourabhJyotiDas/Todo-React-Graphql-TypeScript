@@ -1,31 +1,28 @@
 import { Todo } from "../models/todo.js";
 
-export const getTodos = async (parent, { id },context) => {
+export const getTodos = async (parent, { id }, { req, res }) => {
    try {
 
+      if (!req.user) throw new Error("unauthorized: Login first")
 
-      
       const todos = await Todo.find({ user: id }).populate("user")
       return todos;
+
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error, message)
    }
 };
 
 
-export const createTodo = async (req, res) => {
+export const createTodo = async (parent, args, { req, res }) => {
    try {
-      const { title, description } = req.body;
+
+      if (!req.user) throw new Error("unauthorized: Login first");
+
+      const { title, description } = args;
 
       if (!title) {
-         return res.status(400).json({
-            success: false,
-            message: 'Title is required',
-         });
+         throw new Error("Title should not be empty");
       }
 
       const newTodo = new Todo({
@@ -37,55 +34,41 @@ export const createTodo = async (req, res) => {
 
       await newTodo.save();
 
-      return res.status(201).json({
+      return ({
          success: true,
          message: 'Todo created successfully',
-         todo: newTodo,
       });
+
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error, message)
    }
 };
 
 
 
 
-export const todoDetails = async (req, res) => {
+export const todoDetails = async (parent, args, { req, res }) => {
    try {
-      const { id } = req.params;
+      const { id } = args;
 
       // Find the todo by id and ensure it belongs to the authenticated user
       const todo = await Todo.findOne({ _id: id, user: req.user._id });
 
       if (!todo) {
-         return res.status(404).json({
-            success: false,
-            message: 'Todo not found or you are not authorized to view it',
-         });
+         throw new Error("Todo not found")
       }
 
-      return res.status(200).json({
-         success: true,
-         todo,
-      });
+      return todo;
+
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error, message)
    }
 };
 
 
-export const updateTodo = async (req, res) => {
+export const updateTodo = async (parent, args, { req, res }) => {
    try {
-      const { id } = req.params;
-      const { title, description, status, dueDate } = req.body;
+      const { id, title, description, status, dueDate } = args;
 
       const updatedTodo = await Todo.findOneAndUpdate(
          { _id: id, user: req.user._id },  // Ensure the todo belongs to the authenticated user
@@ -94,49 +77,34 @@ export const updateTodo = async (req, res) => {
       );
 
       if (!updatedTodo) {
-         return res.status(404).json({
-            success: false,
-            message: 'Todo not found or you are not authorized to update it',
-         });
+         throw new Error("Todo not found");
       }
 
-      return res.status(200).json({
+      return ({
          success: true,
          message: 'Todo updated successfully',
-         todo: updatedTodo,
       });
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error, message)
    }
 };
 
 
-export const deleteTodo = async (req, res) => {
+export const deleteTodo = async (parent, args, { req, res }) => {
    try {
-      const { id } = req.params;
+      const { id } = args;
 
       const deletedTodo = await Todo.findOneAndDelete({ _id: id, user: req.user._id });
 
       if (!deletedTodo) {
-         return res.status(404).json({
-            success: false,
-            message: 'Todo not found or you are not authorized to delete it',
-         });
+         throw new Error("Todo not found or already deleted");
       }
 
-      return res.status(200).json({
+      return ({
          success: true,
          message: 'Todo deleted successfully',
       });
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: 'Something went wrong',
-         error: error.message,
-      });
+      throw new Error(error, message)
    }
 };
