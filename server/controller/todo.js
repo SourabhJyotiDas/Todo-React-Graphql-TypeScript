@@ -26,7 +26,7 @@ export const createTodo = async (parent, args, { req, res }) => {
       }
 
       const newTodo = new Todo({
-         user: req.user._id,  // Attach the authenticated user's ID
+         user: req.user._id,  
          title,
          description,
          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
