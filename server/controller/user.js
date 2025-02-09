@@ -1,47 +1,43 @@
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
 import { User } from "../models/user.js";
+import { GraphQLError } from "graphql";
 
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (parent, args, { req, res }) => {
+
    try {
+
+      // console.log(req.user)
 
       const users = await User.find({});
       return users;
-
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
-export const register = async (req, res, next) => {
+
+
+export const register = async (parent, args, { req, res }) => {
+
    try {
-      const { username, password, email } = req.body;
 
-      if (!username || !password || !email) {
-         return res.status(400).json({
-            success: false,
-            message: 'Please fill all fields',
-         });
+      if (!args.username || !args.password || !args.email) {
+         throw new Error("Please fill all fields");
       }
 
-      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+      const existingUser = await User.findOne({ $or: [{ username: args.username }, { email: args.email }] });
       if (existingUser) {
-         return res.status(409).json({
-            success: false,
-            message: 'A user already exists with this username or email',
-         });
+         throw new Error("User already exist.");
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(args.password, 10);
 
       const newUser = await User.create({
-         username,
+         username: args.username,
          password: hashedPassword,
-         email,
+         email: args.email,
       });
 
       // Generate a JWT token
@@ -57,15 +53,9 @@ export const register = async (req, res, next) => {
          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      return res.status(201).json({
-         success: true,
-         message: 'User registered successfully',
-      });
+      return newUser
    } catch (error) {
-      return res.status(500).json({
-         success: false,
-         message: error.message,
-      });
+      throw new Error(error.message);
    }
 };
 
@@ -147,7 +137,9 @@ export const userDetails = (req, res) => {
    }
 };
 
-export const logout = (req, res) => {
+
+
+export const logout = (parent, args, { req, res }) => {
    try {
       // Clear the token from cookies
       res.clearCookie('token', {
@@ -170,11 +162,12 @@ export const logout = (req, res) => {
 };
 
 
+
 export const updateUserDetails = async (req, res) => {
    try {
       const { username, phone, status } = req.body;
 
-      // Ensure user is authenticated (req.user is set by `authenticateUser` middleware)
+      // Ensure user is authenticated (req.user is set by `authMiddleware` middleware)
       if (!req.user) {
          return res.status(401).json({
             success: false,

@@ -1,7 +1,10 @@
 import { Todo } from "../models/todo.js";
 
-export const getTodos = async (parent, { id }) => {
+export const getTodos = async (parent, { id },context) => {
    try {
+
+
+      
       const todos = await Todo.find({ user: id }).populate("user")
       return todos;
    } catch (error) {

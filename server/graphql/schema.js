@@ -27,12 +27,12 @@ type Todo {
 type Query{
   Todos(id:ID!):[Todo]
   Users:[User]
-  #  post(id:ID!):Post
 }
 
-# type Mutation {
-#   createNewUser(name:String!, email:String!, password:String!):String
-# }
+type Mutation {
+  createNewUser(username:String!, email:String!, password:String!):User
+  createNewUser(username:String!, email:String!, password:String!):String
+}
 
 
 

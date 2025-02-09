@@ -1,6 +1,6 @@
 import express from "express";
 import { deleteAccount, login, logout, register, updatePassword, updateUserDetails, userDetails } from "../controller/user.js";
-import { authenticateUser } from "../middleware/checkAuth.js";
+import { authMiddleware } from "../middleware/checkAuth.js";
 
 const router = express.Router();
 
@@ -8,14 +8,14 @@ router.route("/register").post(register);
 
 router.route("/login").post(login);
 
-router.route("/me").get(authenticateUser, userDetails);
+router.route("/me").get(authMiddleware, userDetails);
 
-router.route("/logout").get(authenticateUser, logout);
+router.route("/logout").get(authMiddleware, logout);
 
-router.route("/update").put(authenticateUser, updateUserDetails);
+router.route("/update").put(authMiddleware, updateUserDetails);
 
-router.route("/update/password").put(authenticateUser, updatePassword);
+router.route("/update/password").put(authMiddleware, updatePassword);
 
-router.route("/delete").delete(authenticateUser, deleteAccount);
+router.route("/delete").delete(authMiddleware, deleteAccount);
 
 export default router;
