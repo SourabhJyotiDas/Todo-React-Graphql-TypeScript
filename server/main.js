@@ -1,6 +1,7 @@
 import { expressMiddleware } from "@apollo/server/express4";
 import cookieParser from 'cookie-parser';
 import express from "express";
+import cors from "cors"
 import { connectToDatabase } from "./config/database.js";
 import { connectGraphQl } from "./graphql/server.js";
 import {authMiddleware} from "./middleware/checkAuth.js"
@@ -13,6 +14,7 @@ const startServer = async () => {
 
 
   const app = express();
+  app.use(cors());
 
   app.use(express.json());
   app.use(cookieParser());

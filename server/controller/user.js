@@ -1,14 +1,13 @@
-import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.js";
-import { GraphQLError } from "graphql";
 
 
 export const getAllUsers = async (parent, args, { req, res }) => {
 
    try {
 
-      if (!req.user) throw new Error("unauthorised: Login first");
+      // if (!req.user) throw new Error("unauthorised: Login first");
 
       const users = await User.find({});
       return users;
@@ -53,7 +52,10 @@ export const register = async (parent, args, { req, res }) => {
          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      return newUser
+      return ({
+         success: true,
+         message: "User registered successfully"
+      })
    } catch (error) {
       throw new Error(error.message);
    }
@@ -70,7 +72,7 @@ export const login = async (parent, args, { req, res }) => {
 
       const user = await User.findOne({ email }).select('+password');
 
-      if (user) throw new Error("User already exist");
+      if (!user) throw new Error("User not found");
 
       const isPasswordMatching = await bcrypt.compare(password, user.password);
 
@@ -92,8 +94,8 @@ export const login = async (parent, args, { req, res }) => {
       });
 
       return ({
-         message: 'Login successful',
-         user,
+         message: 'Login successfully',
+         user: user
       });
    } catch (error) {
       throw new Error(error.message);
@@ -106,7 +108,8 @@ export const userDetails = (parent, args, { req, res }) => {
       // Ensure `req.user` is available
       if (!req.user) throw new Error("unauthorised: Login first");
 
-      return (req.user)
+      const user = req.user;
+      return user;
    } catch (error) {
       throw new Error(error.message);
    }
@@ -123,7 +126,10 @@ export const logout = (parent, args, { req, res }) => {
          sameSite: 'strict', // Prevent CSRF attacks
       });
 
-      return ('Logged out successfully')
+      return ({
+         success: true,
+         message: "Logout successfully"
+      })
 
    } catch (error) {
       throw new Error(error.message);
@@ -152,7 +158,10 @@ export const updateUserDetails = async (parent, args, { req, res }) => {
          throw new Error("User not found.");
       }
 
-      return updatedUser;
+      return ({
+         success: true,
+         message: "User updated Successfully"
+      })
 
    } catch (error) {
       throw new Error(error.message);
@@ -184,6 +193,7 @@ export const updatePassword = async (req, res) => {
          success: true,
          message: 'Password updated successfully',
       });
+
    } catch (error) {
       throw new Error(error.message);
    }
