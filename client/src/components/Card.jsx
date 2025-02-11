@@ -1,12 +1,12 @@
+import { gql, useLazyQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { useQuery, gql, useLazyQuery } from "@apollo/client";
 import { getUsers } from "../graphql/query/query";
 
 export default function TodoList() {
   // const { loading, data, error } = useQuery(gql(getUsers));
   // console.log(data)
 
-  const [handleClick, { loading, data, error }] = useLazyQuery(gql(getUsers));  //when button clicks
+  const [handleClick, { loading, data, error }] = useLazyQuery(gql(getUsers)); //when button clicks
   // console.log(data)
 
   const todos = [

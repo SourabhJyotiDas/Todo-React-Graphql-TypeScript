@@ -1,31 +1,37 @@
-import { useState } from "react";
-import "./index.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Card from "./components/Card";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import ForgotPassword from "./components/ForgotPassword";
-import Navbar from "./components/Navbar";
 import CreateTodo from "./components/CreateTodo";
-import Profile from "./components/Profile";
-import UpdateUserDetails from "./components/UpdateProfile";
-import UpdatePassword from "./components/UpdatePassword";
-import { ToastContainer, toast } from "react-toastify";
-import { useMutation, gql, useQuery } from "@apollo/client";
+import ForgotPassword from "./components/ForgotPassword";
 import LoadingPage from "./components/Loader";
+import Login from "./components/Login";
+import Navbar from "./components/Navbar";
+import Profile from "./components/Profile";
+import Register from "./components/Register";
+import UpdatePassword from "./components/UpdatePassword";
+import UpdateUserDetails from "./components/UpdateProfile";
 import { loggedInUser } from "./graphql/query/query";
+import "./index.css";
+import { useEffect, useState } from "react";
 
 function App() {
-  const { loading, data, error } = useQuery(gql(loggedInUser));
-  console.log(data);
-  console.log("error----", error);
+  const [user, setUser] = useState(null);
+
+  const { loading, data } = useQuery(gql(loggedInUser));
+
+  useEffect(() => {
+    if (data?.userDetails) {
+      setUser(data?.userDetails);
+    }
+  }, [data?.userDetails]);
 
   if (loading) return <LoadingPage />;
 
   return (
     <>
       <Router>
-        <Navbar />
+        <Navbar user={user} setUser={setUser} />
         <ToastContainer />
         <Routes>
           <Route path="/" element={<Card />} />

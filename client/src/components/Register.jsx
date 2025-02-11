@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Use for React Router
 import { useMutation, gql } from "@apollo/client";
-import { createUser } from "../graphql/mutation/mutation";
+import { register } from "../graphql/mutation/mutation";
 import { toast } from "react-toastify";
 import LoadingPage from "./Loader";
 
@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
 
   const [handleCreateUser, { loading, data, error, reset }] = useMutation(
-    gql(createUser)
+    gql(register)
   );
 
   if (loading) return <LoadingPage />;

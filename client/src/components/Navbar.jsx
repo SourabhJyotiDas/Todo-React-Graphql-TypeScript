@@ -1,11 +1,16 @@
+import { gql, useMutation } from "@apollo/client";
 import React from "react";
-import { Link } from "react-router-dom"; // Import useHistory for redirection
-import { useMutation, gql } from "@apollo/client";
-import { logout } from "../graphql/mutation/mutation";
+import { Link, useNavigate } from "react-router-dom"; // Import useHistory for redirection
 import { toast } from "react-toastify";
+import { logout } from "../graphql/mutation/mutation";
 import LoadingPage from "./Loader";
 
-export default function Navbar() {
+import { useApolloClient } from "@apollo/client";
+
+export default function Navbar({ user, setUser }) {
+  const client = useApolloClient();
+  const navigate = useNavigate();
+
   const [handleLogout, { loading, data, error, reset }] = useMutation(
     gql(logout)
   );
@@ -38,6 +43,8 @@ export default function Navbar() {
       theme: "light",
     });
     reset();
+    setUser(null);
+    navigate("/login"); // ✅ Navigate to /dashboard
   }
 
   return (
@@ -54,14 +61,17 @@ export default function Navbar() {
           <Link to="/profile" className="text-gray-300 hover:text-white">
             Profile
           </Link>
-          <Link to="/login" className="text-gray-300 hover:text-white">
-            Login
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="text-gray-300 hover:text-white cursor-pointer">
-            Logout
-          </button>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="text-gray-300 hover:text-white cursor-pointer">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="text-gray-300 hover:text-white">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>

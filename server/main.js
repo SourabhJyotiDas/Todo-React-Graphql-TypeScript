@@ -12,29 +12,20 @@ const PORT = process.env.PORT
 
 const startServer = async () => {
 
-
   const app = express();
-  app.use(cors());
-
+  connectToDatabase()
+  
+  app.use(cors({
+    origin: 'http://localhost:5173', // Allow only your frontend domain
+    credentials: true, // ✅ Allow cookies in cross-origin requests
+  }));
+  
   app.use(express.json());
   app.use(cookieParser());
 
-  connectToDatabase()
   
   const server = connectGraphQl();
   await server.start();
-
-  // app.use("/graphql", expressMiddleware(server));
-
-  // app.use(
-  //   "/graphql",
-  //   authMiddleware, // Use auth middleware before GraphQL requests
-  //   expressMiddleware(server, {
-  //     context: async ({ req }) => {
-  //       return { user: req.user }; // Attach authenticated user to GraphQL context
-  //     },
-  //   })
-  // );
 
   app.use(
     "/graphql",

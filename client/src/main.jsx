@@ -1,10 +1,20 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  createHttpLink,
+} from "@apollo/client";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 
-export const apolloClient = new ApolloClient({
+const httpLink = createHttpLink({
   uri: "http://localhost:5000/graphql",
+  credentials: "include", // ✅ Required for cookies
+});
+
+export const apolloClient = new ApolloClient({
+  link: httpLink,
   cache: new InMemoryCache(),
 });
 

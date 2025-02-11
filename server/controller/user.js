@@ -47,10 +47,11 @@ export const register = async (parent, args, { req, res }) => {
       // Set the token in cookies
       res.cookie('token', token, {
          httpOnly: true,
-         secure: process.env.NODE_ENV === 'production',
-         sameSite: 'strict',
+         secure: true,// Must be true for cross-site cookies
+         sameSite: 'none',  // Allow cross-site access
          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
+
 
       return ({
          success: true,
@@ -88,10 +89,11 @@ export const login = async (parent, args, { req, res }) => {
       // Set the token in cookies
       res.cookie('token', token, {
          httpOnly: true,
-         secure: process.env.NODE_ENV === 'production', // Secure flag for HTTPS in production
-         sameSite: 'strict', // Prevent CSRF attacks
-         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+         secure: true,// Must be true for cross-site cookies
+         sameSite: 'none',  // Allow cross-site access
+         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
+      
 
       return ({
          message: 'Login successfully',
@@ -120,11 +122,13 @@ export const userDetails = (parent, args, { req, res }) => {
 export const logout = (parent, args, { req, res }) => {
    try {
       // Clear the token from cookies
+
       res.clearCookie('token', {
          httpOnly: true,
-         secure: process.env.NODE_ENV === 'production', // Only in HTTPS in production
-         sameSite: 'strict', // Prevent CSRF attacks
+         secure: "true",
+         sameSite: 'none' // Must match the original setting
       });
+
 
       return ({
          success: true,
