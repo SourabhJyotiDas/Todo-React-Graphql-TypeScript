@@ -54,9 +54,9 @@ export const register = async (parent, args, { req, res }) => {
 
 
       return ({
-         success: true,
-         message: "User registered successfully"
-      })
+         message: 'User registered successfully',
+         user: newUser
+      });
    } catch (error) {
       throw new Error(error.message);
    }
@@ -93,7 +93,7 @@ export const login = async (parent, args, { req, res }) => {
          sameSite: 'none',  // Allow cross-site access
          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
-      
+
 
       return ({
          message: 'Login successfully',
@@ -173,7 +173,7 @@ export const updateUserDetails = async (parent, args, { req, res }) => {
 };
 
 
-export const updatePassword = async (req, res) => {
+export const updatePassword = async (parent, args, { req, res }) => {
    try {
       const { oldPassword, newPassword } = req.body;
 
@@ -204,7 +204,7 @@ export const updatePassword = async (req, res) => {
 };
 
 
-export const deleteAccount = async (req, res) => {
+export const deleteAccount = async (parent, args, { req, res }) => {
    try {
       if (!req.user) throw new Error("unauthorised: Login first");
 
@@ -217,8 +217,8 @@ export const deleteAccount = async (req, res) => {
 
       res.clearCookie('token', {
          httpOnly: true,
-         secure: process.env.NODE_ENV === 'production', // Only in HTTPS in production
-         sameSite: 'strict', // Prevent CSRF attacks
+         secure: "true",
+         sameSite: 'none' // Must match the original setting
       });
 
       return ({

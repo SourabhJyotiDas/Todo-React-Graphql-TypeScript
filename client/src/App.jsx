@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { useContext, useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Card from "./components/Card";
@@ -11,12 +12,12 @@ import Profile from "./components/Profile";
 import Register from "./components/Register";
 import UpdatePassword from "./components/UpdatePassword";
 import UpdateUserDetails from "./components/UpdateProfile";
+import { AppContext } from "./context/AppContext";
 import { loggedInUser } from "./graphql/query/query";
 import "./index.css";
-import { useEffect, useState } from "react";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(AppContext);
 
   const { loading, data } = useQuery(gql(loggedInUser));
 
@@ -31,17 +32,26 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar user={user} setUser={setUser} />
+        <Navbar />
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<Card />} />
+          <Route path="/" element={user ? <Card /> : <Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/create-todo" element={<CreateTodo />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/update-profile" element={<UpdateUserDetails />} />
-          <Route path="/update-password" element={<UpdatePassword />} />
+          <Route
+            path="/create-todo"
+            element={user ? <CreateTodo /> : <login />}
+          />
+          <Route path="/profile" element={user ? <Profile /> : <Login />} />
+          <Route
+            path="/update-profile"
+            element={user ? <UpdateUserDetails /> : <Login />}
+          />
+          <Route
+            path="/update-password"
+            element={user ? <UpdatePassword /> : <Login />}
+          />
         </Routes>
       </Router>
     </>

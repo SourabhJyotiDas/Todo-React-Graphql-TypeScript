@@ -1,13 +1,18 @@
 import { gql, useMutation } from "@apollo/client";
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Use for React Router
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import useHistory for redirection
 import { toast } from "react-toastify";
+import { AppContext } from "../context/AppContext";
 import { login } from "../graphql/mutation/mutation";
 import LoadingPage from "./Loader";
 
 export default function Login() {
+  const { setUser } = useContext(AppContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const [handleCreateUser, { loading, data, error, reset }] = useMutation(
     gql(login)
@@ -17,7 +22,7 @@ export default function Login() {
 
   if (data) {
     toast.success(data?.loginUser?.message, {
-      position: "top-center",
+      position: "bottom-right",
       autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: false,
@@ -26,12 +31,14 @@ export default function Login() {
       progress: undefined,
       theme: "light",
     });
+    setUser(data.loginUser.user);
     reset();
+    navigate("/");
   }
 
   if (error) {
     toast.error(error.message, {
-      position: "top-center",
+      position: "bottom-right",
       autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: false,
@@ -49,52 +56,46 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-900">
-      <div className="w-full max-w-md p-6 bg-gray-800/80 backdrop-blur-lg border border-gray-700 rounded-2xl shadow-2xl transition hover:scale-[1.02]">
-        <h2 className="text-3xl font-bold text-center text-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="w-full max-w-md p-8 bg-gray-800/60 backdrop-blur-xl border border-gray-700 rounded-2xl shadow-xl transition-transform hover:scale-105 duration-300">
+        <h1 className="text-white text-3xl font-bold tracking-wide uppercase drop-shadow-lg text-center">
           Taskify
-        </h2>
+        </h1>
 
-        <form className="mt-6 space-y-6" onSubmit={submitHandler}>
+        <form className="mt-8 space-y-6" onSubmit={submitHandler}>
           {/* Email Input */}
-          <div className="relative">
+          <div>
+            <label htmlFor="email" className="block text-gray-300 mb-1">
+              Email
+            </label>
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
-              className="peer w-full bg-gray-700 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-transparent"
-              placeholder="Your Email"
+              className="w-full bg-gray-700/70 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <label
-              htmlFor="email"
-              className="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-3 peer-focus:text-sm peer-focus:text-blue-400">
-              Email
-            </label>
           </div>
 
           {/* Password Input */}
-          <div className="relative">
+          <div>
+            <label htmlFor="password" className="block text-gray-300 mb-1">
+              Password
+            </label>
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               id="password"
-              className="peer w-full bg-gray-700 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-transparent"
-              placeholder="Your Password"
+              className="w-full bg-gray-700/70 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <label
-              htmlFor="password"
-              className="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-3 peer-focus:text-sm peer-focus:text-blue-400">
-              Password
-            </label>
           </div>
 
           {/* Forgot Password */}
           <div className="text-right">
             <Link
               to="/forgot-password"
-              className="text-blue-400 hover:underline">
+              className="text-blue-400 hover:text-blue-300 transition">
               Forgot Password?
             </Link>
           </div>
@@ -102,7 +103,7 @@ export default function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:scale-105 transition hover:from-blue-400 hover:to-purple-400 active:scale-95">
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300">
             Login
           </button>
         </form>
@@ -110,7 +111,7 @@ export default function Login() {
         {/* Register Link */}
         <p className="mt-6 text-center text-gray-400">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-400 hover:underline">
+          <Link to="/register" className="text-blue-400 hover:text-blue-300">
             Register here
           </Link>
         </p>
