@@ -48,3 +48,12 @@ mutation DeleteUserAccount {
     message
   }
 }`;
+
+export const createTodo = `#graphql
+mutation Mutation($title: String!, $description: String!) {
+  createNewTodo(title: $title, description: $description) {
+    success
+    message
+  }
+}
+`;

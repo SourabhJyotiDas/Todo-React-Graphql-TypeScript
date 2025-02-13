@@ -1,4 +1,4 @@
-
+import { gql } from "@apollo/client";
 
 export const getUsers = `#graphql
 query Query {
@@ -12,7 +12,7 @@ query Query {
     updatedAt
   }
 }
-`
+`;
 
 export const loggedInUser = `#graphql
 query Query {
@@ -27,4 +27,31 @@ query Query {
     updatedAt
   }
 }
-`
+`;
+
+export const Todos = `#graphql
+query Query {
+  Todos {
+    _id
+    title
+    description
+    status
+    dueDate
+    createdAt
+    updatedAt
+  }
+}
+`;
+
+export const GET_TODO_DETAILS = gql`
+query Query($id: ID!) {
+  todoDetails(id: $id) {
+    title
+    description
+    status
+    dueDate
+    createdAt
+    updatedAt
+  }
+}
+`;

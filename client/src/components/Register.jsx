@@ -99,7 +99,7 @@ export default function RegisterPage() {
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300">
+            className="cursor-pointer w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300">
             Register
           </button>
         </form>

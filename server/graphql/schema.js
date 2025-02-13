@@ -36,10 +36,10 @@ type NormalResponse {
 
 
 type Query {
-  Todos: [Todo]             # Get all Todos  //TODO
+  Todos: [Todo]             # Get all Todos 
   Users: [User]             # Get all Users  //TODO
   userDetails: User   # Get details of a specific User  
-  todoDetails(id: ID!): Todo   # Get details of a specific Todo   //TODO
+  todoDetails(id: ID!): Todo   # Get details of a specific Todo 
 }
 
 type Mutation {
@@ -55,7 +55,7 @@ type Mutation {
 
   deleteUserAccount: NormalResponse   # Delete user account
 
-  createNewTodo(title: String!, description: String!): NormalResponse  # Create new Todo    //TODO
+  createNewTodo(title: String!, description: String!): NormalResponse  # Create new Todo   
 
   deleteTodo(id: ID!): NormalResponse   # Delete a Todo     //TODO
   

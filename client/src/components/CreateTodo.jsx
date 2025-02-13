@@ -1,20 +1,55 @@
+import { gql, useMutation } from "@apollo/client";
 import React, { useState } from "react";
-// import { useMutation ,gql} from "@apollo/client";
+import { createTodo } from "../graphql/mutation/mutation";
+import LoadingPage from "./Loader";
+import { toast } from "react-toastify";
 
-export default function CreateTodo({ onAdd }) {
+export default function CreateTodo() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  // const [handleSubmit,{}]=useMutation(gql(createUser))
+  const [handleCreateUser, { loading, data, error, reset }] = useMutation(
+    gql(createTodo)
+  );
 
-
-  const handleSubmit = (e) => {
+  const submitHandler = (e) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
-    onAdd({ title, description, date: new Date().toISOString().split("T")[0] });
+    handleCreateUser({ variables: { title, description } });
+  };
+
+  if (loading) return <LoadingPage />;
+
+  if (data) {
+    toast.success(data?.createNewTodo?.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
     setTitle("");
     setDescription("");
-  };
+  }
+
+  if (error) {
+    toast.error(error.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
+    setTitle("");
+    setDescription("");
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -22,7 +57,7 @@ export default function CreateTodo({ onAdd }) {
         <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
           ✨ Create New Todo
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={submitHandler} className="space-y-4">
           {/* Title Input */}
           <div className="relative">
             <input

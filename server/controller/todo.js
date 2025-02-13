@@ -1,11 +1,11 @@
 import { Todo } from "../models/todo.js";
 
-export const getTodos = async (parent, { id }, { req, res }) => {
+export const getTodos = async (parent, args, { req, res }) => {
    try {
 
       if (!req.user) throw new Error("unauthorized: Login first")
 
-      const todos = await Todo.find({ user: id }).populate("user")
+      const todos = await Todo.find({ user: req.user._id }).populate("user")
       return todos;
 
    } catch (error) {
@@ -26,7 +26,7 @@ export const createTodo = async (parent, args, { req, res }) => {
       }
 
       const newTodo = new Todo({
-         user: req.user._id,  
+         user: req.user._id,
          title,
          description,
          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)

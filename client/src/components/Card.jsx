@@ -1,34 +1,30 @@
-import { gql, useLazyQuery } from "@apollo/client";
-import React, { useState } from "react";
-import { getUsers } from "../graphql/query/query";
+import { gql, useQuery } from "@apollo/client";
+import React from "react";
+import { Todos } from "../graphql/query/query";
 import TodoCard from "./TodoCard";
+import { toast } from "react-toastify";
+import LoadingPage from "./Loader";
 
 export default function TodoList() {
 
-  const [handleClick, { loading, data, error }] = useLazyQuery(gql(getUsers)); //when button clicks
+  const { loading, data, error, refetch } = useQuery(gql(Todos), {
+    fetchPolicy: "cache-and-network",
+  });
 
-  const todos = [
-    {
-      title: "🏪 Buy Groceries",
-      description: "Milk, Bread, Eggs, Fruits",
-      date: "2025-02-10",
-    },
-    {
-      title: "💻 Complete Project",
-      description: "Finish the React component for the dashboard",
-      date: "2025-02-12",
-    },
-    {
-      title: "📚 Read a Book",
-      description: "Read 'Atomic Habits' for at least 30 minutes",
-      date: "2025-02-14",
-    },
-    {
-      title: "🏋️ Workout Session",
-      description: "Go to the gym and do a full-body workout",
-      date: "2025-02-15",
-    },
-  ];
+  if (loading) return <LoadingPage />;
+
+  if (error) {
+    toast.error(error.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
 
   return (
     <div className="flex flex-wrap justify-center gap-6 p-8 bg-gray-900 min-h-screen">
@@ -36,7 +32,7 @@ export default function TodoList() {
         📋 Premium Todo List
       </h2>
 
-      {todos.map((todo, index) => (
+      {data?.Todos.map((todo, index) => (
         <TodoCard key={index} {...todo} />
       ))}
     </div>

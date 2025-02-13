@@ -15,6 +15,7 @@ import UpdateUserDetails from "./components/UpdateProfile";
 import { AppContext } from "./context/AppContext";
 import { loggedInUser } from "./graphql/query/query";
 import "./index.css";
+import TodoDetails from "./components/TodoDetails";
 
 function App() {
   const { user, setUser } = useContext(AppContext);
@@ -36,6 +37,7 @@ function App() {
         <ToastContainer />
         <Routes>
           <Route path="/" element={user ? <Card /> : <Login />} />
+          <Route path="/:id" element={user ? <TodoDetails /> : <Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
