@@ -1,4 +1,3 @@
-import { gql } from "@apollo/client";
 
 export const getUsers = `#graphql
 query Query {
@@ -43,15 +42,15 @@ query Query {
 }
 `;
 
-export const GET_TODO_DETAILS = gql`
-query Query($id: ID!) {
-  todoDetails(id: $id) {
-    title
-    description
-    status
-    dueDate
-    createdAt
-    updatedAt
+export const GET_TODO_DETAILS = `#graphql
+  query Query($id: ID!) {
+    todoDetails(id: $id) {
+      title
+      description
+      status
+      dueDate
+      createdAt
+      updatedAt
+    }
   }
-}
 `;

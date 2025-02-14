@@ -57,3 +57,12 @@ mutation Mutation($title: String!, $description: String!) {
   }
 }
 `;
+
+export const UPDATE_TODO_STATUS = `#graphql
+mutation Mutation($chnageTodoStatusId: ID!, $status: String) {
+  chnageTodoStatus(id: $chnageTodoStatusId, status: $status) {
+    success
+    message
+  }
+}
+`;

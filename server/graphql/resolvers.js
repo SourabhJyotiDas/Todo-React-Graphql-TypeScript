@@ -1,4 +1,4 @@
-import { getTodos, createTodo, deleteTodo, todoDetails, updateTodo } from "../controller/todo.js";
+import { getTodos, createTodo, deleteTodo, todoDetails, updateTodo, chnageTodoStatus } from "../controller/todo.js";
 import { deleteAccount, login, logout, register, updatePassword, updateUserDetails, userDetails, getAllUsers } from "../controller/user.js";
 
 export const resolver = {
@@ -22,7 +22,7 @@ export const resolver = {
     createNewTodo: createTodo,
     deleteTodo: deleteTodo,
     updateTodo: updateTodo,
-
+    chnageTodoStatus: chnageTodoStatus
   },
 
 

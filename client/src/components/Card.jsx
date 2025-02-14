@@ -33,7 +33,7 @@ export default function TodoList() {
       </h2>
 
       {data?.Todos.map((todo, index) => (
-        <TodoCard key={index} {...todo} />
+        <TodoCard key={index} {...todo} refetch={refetch}/>
       ))}
     </div>
   );

@@ -9,7 +9,7 @@ export const getTodos = async (parent, args, { req, res }) => {
       return todos;
 
    } catch (error) {
-      throw new Error(error, message)
+      throw new Error(error.message)
    }
 };
 
@@ -61,7 +61,7 @@ export const todoDetails = async (parent, args, { req, res }) => {
       return todo;
 
    } catch (error) {
-      throw new Error(error, message)
+      throw new Error(error.message)
    }
 };
 
@@ -85,7 +85,7 @@ export const updateTodo = async (parent, args, { req, res }) => {
          message: 'Todo updated successfully',
       });
    } catch (error) {
-      throw new Error(error, message)
+      throw new Error(error.message)
    }
 };
 
@@ -105,6 +105,31 @@ export const deleteTodo = async (parent, args, { req, res }) => {
          message: 'Todo deleted successfully',
       });
    } catch (error) {
-      throw new Error(error, message)
+      throw new Error(error.message)
+   }
+};
+
+
+
+export const chnageTodoStatus = async (parent, args, { req, res }) => {
+   try {
+      const { id, status } = args;
+
+      const updatedTodo = await Todo.findOneAndUpdate(
+         { _id: id, user: req.user._id },  // Ensure the todo belongs to the authenticated user
+         { status },
+         { new: true, runValidators: true }  // Return the updated todo and validate the fields
+      );
+
+      if (!updatedTodo) {
+         throw new Error("Todo not found");
+      }
+
+      return ({
+         success: true,
+         message: 'status updated successfully',
+      });
+   } catch (error) {
+      throw new Error(error.message)
    }
 };

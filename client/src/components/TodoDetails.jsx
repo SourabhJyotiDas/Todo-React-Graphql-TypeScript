@@ -5,15 +5,11 @@ import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "@apollo/client";
 import { GET_TODO_DETAILS } from "../graphql/query/query";
 
-// Define mutations for update & delete
-
 const TodoDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState("pending");
-
   // Fetch todo details
-  const { loading, error, data } = useQuery(GET_TODO_DETAILS, {
+  const { loading, error, data } = useQuery(gql(GET_TODO_DETAILS), {
     variables: { id },
     fetchPolicy: "cache-and-network",
   });
@@ -27,49 +23,66 @@ const TodoDetails = () => {
   const todo = data?.todoDetails;
   if (!todo) return <p>No Todo Found</p>;
 
+  // Convert timestamps to readable format
+  const formatDate = (timestamp) => {
+    return new Date(Number(timestamp)).toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900">
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 p-4">
       <div className="relative bg-gray-800/80 p-6 rounded-2xl shadow-xl border border-gray-700 backdrop-blur-lg w-96">
+        {/* Title */}
         <h2 className="text-2xl font-semibold text-gray-100">{todo.title}</h2>
         <p className="text-sm text-gray-300 mt-2">{todo.description}</p>
-        <p className="text-xs text-gray-400 mt-2">📅 {todo.dueDate}</p>
 
-        {/* Status Radio Buttons */}
-        <div className="mt-4 space-y-2">
-          {["pending", "inprogress", "completed"].map((item) => (
-            <div className="flex items-center gap-2" key={item}>
-              <div
-                className={`w-4 h-4 rounded-full cursor-pointer transition ${
-                  item === status ? "scale-125" : "opacity-50"
-                } ${
-                  item === "pending"
-                    ? "bg-yellow-400"
-                    : item === "inprogress"
-                    ? "bg-blue-400"
-                    : "bg-green-400"
-                }`}
-                onClick={() => setStatus(item)}></div>
-              <span className="text-sm text-gray-300 capitalize">{item}</span>
-            </div>
-          ))}
+        {/* Status */}
+        <span
+          className={`mt-3 inline-block px-3 py-1 text-xs font-medium uppercase rounded-lg ${
+            todo.status === "completed"
+              ? "bg-green-600 text-white"
+              : todo.status === "inprogress"
+              ? "bg-blue-600 text-white"
+              : "bg-yellow-500 text-gray-900"
+          }`}>
+          {todo.status}
+        </span>
+
+        {/* Dates Section */}
+        <div className="mt-4 text-sm text-gray-400 space-y-2">
+          <p>
+            📅 <strong>Due Date:</strong> {formatDate(todo.dueDate)}
+          </p>
+          <p>
+            🕒 <strong>Created:</strong> {formatDate(todo.createdAt)}
+          </p>
+          <p>
+            🔄 <strong>Last Updated:</strong> {formatDate(todo.updatedAt)}
+          </p>
         </div>
 
-        {/* Buttons */}
-        {/* <div className="mt-6 flex gap-4">
+        {/* Buttons Section */}
+        {/* <div className="mt-6 flex gap-3 justify-between">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
             onClick={onUpdate}
           >
             Update
           </button>
           <button
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition"
+            className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition"
             onClick={onDelete}
           >
             Delete
           </button>
           <button
-            className="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+            className="flex-1 bg-gray-700 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition"
             onClick={() => navigate("/")}
           >
             Back
