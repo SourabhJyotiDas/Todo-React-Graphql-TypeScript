@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import { useParams, useNavigate,Link } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
+import React from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useQuery, useMutation } from "@apollo/client";
-import { gql } from "@apollo/client";
 import { GET_TODO_DETAILS } from "../graphql/query/query";
 
 const TodoDetails = () => {
@@ -71,12 +70,12 @@ const TodoDetails = () => {
         {/* Action Links */}
         <div className="mt-4 flex justify-between">
           <Link
-            href={`/todo/update/${todo.id}`}
+            to={`/todo/update/${todo.id}`}
             className="text-blue-400 hover:underline">
             ✏️ Update
           </Link>
           <Link
-            href={`/todo/delete/${todo.id}`}
+            to={`/todo/delete/${todo.id}`}
             className="text-red-400 hover:underline">
             🗑️ Delete
           </Link>

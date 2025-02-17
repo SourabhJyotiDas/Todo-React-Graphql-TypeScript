@@ -16,6 +16,7 @@ import { AppContext } from "./context/AppContext";
 import { loggedInUser } from "./graphql/query/query";
 import "./index.css";
 import TodoDetails from "./components/TodoDetails";
+import UpdateTodo from "./components/Update_Todo";
 
 function App() {
   const { user, setUser } = useContext(AppContext);
@@ -44,6 +45,10 @@ function App() {
           <Route
             path="/create-todo"
             element={user ? <CreateTodo /> : <login />}
+          />
+          <Route
+            path="/todo/update/:id"
+            element={user ? <UpdateTodo /> : <login />}
           />
           <Route path="/profile" element={user ? <Profile /> : <Login />} />
           <Route

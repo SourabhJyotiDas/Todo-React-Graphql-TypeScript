@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useState, useEffect } from "react";
-import { updateTodo } from "../graphql/mutation/mutation";
+// import { updateTodo } from "../graphql/mutation/mutation";
 import LoadingPage from "./Loader";
 import { toast } from "react-toastify";
 
@@ -9,52 +9,52 @@ export default function UpdateTodo({ todo }) {
   const [description, setDescription] = useState(todo?.description || "");
   const [dueDate, setDueDate] = useState(todo?.dueDate || "");
 
-  const [handleUpdateTodo, { loading, data, error, reset }] = useMutation(
-    gql(updateTodo)
-  );
+//   const [handleUpdateTodo, { loading, data, error, reset }] = useMutation(
+//     gql(updateTodo)
+//   );
 
   useEffect(() => {
     if (todo) {
-      setTitle(todo.title);
-      setDescription(todo.description);
-      setDueDate(todo.dueDate);
+      // setTitle(todo.title);
+      // setDescription(todo.description);
+      // setDueDate(todo.dueDate);
     }
   }, [todo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    handleUpdateTodo({ variables: { id: todo.id, title, description, dueDate } });
+   //  handleUpdateTodo({ variables: { id: todo.id, title, description, dueDate } });
   };
 
-  if (loading) return <LoadingPage />;
+//   if (loading) return <LoadingPage />;
 
-  if (data) {
-    toast.success(data?.updateTodo?.message, {
-      position: "bottom-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    reset();
-  }
+//   if (data) {
+//     toast.success(data?.updateTodo?.message, {
+//       position: "bottom-right",
+//       autoClose: 2000,
+//       hideProgressBar: false,
+//       closeOnClick: false,
+//       pauseOnHover: true,
+//       draggable: true,
+//       progress: undefined,
+//       theme: "light",
+//     });
+//     reset();
+//   }
 
-  if (error) {
-    toast.error(error.message, {
-      position: "bottom-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    reset();
-  }
+//   if (error) {
+//     toast.error(error.message, {
+//       position: "bottom-right",
+//       autoClose: 2000,
+//       hideProgressBar: false,
+//       closeOnClick: false,
+//       pauseOnHover: true,
+//       draggable: true,
+//       progress: undefined,
+//       theme: "light",
+//     });
+//     reset();
+//   }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
