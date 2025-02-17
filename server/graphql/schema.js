@@ -59,7 +59,7 @@ type Mutation {
 
   deleteTodo(id: ID!): NormalResponse   # Delete a Todo     //TODO
   
-  updateTodo(id: ID!, title: String, description: String, completed: Boolean): NormalResponse  # Update a Todo    //TODO
+  updateTodo(id: ID!, title: String, description: String, completed: Boolean,dueDate:String): NormalResponse  # Update a Todo    //TODO
 
   chnageTodoStatus(id: ID!,status:String): NormalResponse  # Update a Todo    //TODO
 }

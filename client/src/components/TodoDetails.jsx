@@ -70,7 +70,7 @@ const TodoDetails = () => {
         {/* Action Links */}
         <div className="mt-4 flex justify-between">
           <Link
-            to={`/todo/update/${todo.id}`}
+            to={`/todo/update/${todo._id}`}
             className="text-blue-400 hover:underline">
             ✏️ Update
           </Link>

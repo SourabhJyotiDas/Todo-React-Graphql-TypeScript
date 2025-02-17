@@ -44,11 +44,11 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/create-todo"
-            element={user ? <CreateTodo /> : <login />}
+            element={user ? <CreateTodo /> : <Login />}
           />
           <Route
             path="/todo/update/:id"
-            element={user ? <UpdateTodo /> : <login />}
+            element={user ? <UpdateTodo /> : <Login />}
           />
           <Route path="/profile" element={user ? <Profile /> : <Login />} />
           <Route

@@ -41,23 +41,10 @@ query Query {
 }
 `;
 
-export const TODO_DETAILS = `#graphql
-query Query($id: ID!) {
-  todoDetails(id: $id) {
-    _id
-    title
-    description
-    status
-    dueDate
-    createdAt
-    updatedAt
-  }
-}
-`;
-
 export const GET_TODO_DETAILS = `#graphql
   query Query($id: ID!) {
     todoDetails(id: $id) {
+      _id
       title
       description
       status
