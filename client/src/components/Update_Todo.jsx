@@ -3,15 +3,29 @@ import React, { useState, useEffect } from "react";
 // import { updateTodo } from "../graphql/mutation/mutation";
 import LoadingPage from "./Loader";
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function UpdateTodo({ todo }) {
+export default function UpdateTodo() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState(todo?.title || "");
   const [description, setDescription] = useState(todo?.description || "");
   const [dueDate, setDueDate] = useState(todo?.dueDate || "");
 
-//   const [handleUpdateTodo, { loading, data, error, reset }] = useMutation(
-//     gql(updateTodo)
-//   );
+  // Fetch todo details
+  const {
+    loading: TodoDetailsLoading,
+    error: TodoDetailsError,
+    data: TodoDetailsData,
+  } = useQuery(gql(GET_TODO_DETAILS), {
+    variables: { id },
+    fetchPolicy: "cache-and-network",
+  });
+
+  //   const [handleUpdateTodo, { loading, data, error, reset }] = useMutation(
+  //     gql(updateTodo)
+  //   );
 
   useEffect(() => {
     if (todo) {
@@ -23,38 +37,38 @@ export default function UpdateTodo({ todo }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-   //  handleUpdateTodo({ variables: { id: todo.id, title, description, dueDate } });
+    //  handleUpdateTodo({ variables: { id: todo.id, title, description, dueDate } });
   };
 
-//   if (loading) return <LoadingPage />;
+  //   if (loading) return <LoadingPage />;
 
-//   if (data) {
-//     toast.success(data?.updateTodo?.message, {
-//       position: "bottom-right",
-//       autoClose: 2000,
-//       hideProgressBar: false,
-//       closeOnClick: false,
-//       pauseOnHover: true,
-//       draggable: true,
-//       progress: undefined,
-//       theme: "light",
-//     });
-//     reset();
-//   }
+  //   if (data) {
+  //     toast.success(data?.updateTodo?.message, {
+  //       position: "bottom-right",
+  //       autoClose: 2000,
+  //       hideProgressBar: false,
+  //       closeOnClick: false,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "light",
+  //     });
+  //     reset();
+  //   }
 
-//   if (error) {
-//     toast.error(error.message, {
-//       position: "bottom-right",
-//       autoClose: 2000,
-//       hideProgressBar: false,
-//       closeOnClick: false,
-//       pauseOnHover: true,
-//       draggable: true,
-//       progress: undefined,
-//       theme: "light",
-//     });
-//     reset();
-//   }
+  //   if (error) {
+  //     toast.error(error.message, {
+  //       position: "bottom-right",
+  //       autoClose: 2000,
+  //       hideProgressBar: false,
+  //       closeOnClick: false,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "light",
+  //     });
+  //     reset();
+  //   }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -68,7 +82,7 @@ export default function UpdateTodo({ todo }) {
             <input
               type="text"
               id="title"
-              className="peer w-full bg-gray-700 text-gray-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-transparent"
+              className="peer w-full bg-gray-700 text-gray-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 "
               placeholder="Enter title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -80,7 +94,7 @@ export default function UpdateTodo({ todo }) {
             <textarea
               id="description"
               rows="3"
-              className="peer w-full bg-gray-700 text-gray-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-transparent resize-none"
+              className="peer w-full bg-gray-700 text-gray-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400  resize-none"
               placeholder="Enter description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}></textarea>
@@ -100,7 +114,7 @@ export default function UpdateTodo({ todo }) {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 rounded-lg shadow-lg transition hover:scale-105 hover:from-green-400 hover:to-teal-400 active:scale-95">
+            className="cursor-pointer w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold py-2 rounded-lg shadow-lg transition hover:scale-105 hover:from-green-400 hover:to-teal-400 active:scale-95">
             ✅ Update Todo
           </button>
         </form>

@@ -1,4 +1,3 @@
-
 export const getUsers = `#graphql
 query Query {
   Users {
@@ -31,6 +30,20 @@ query Query {
 export const Todos = `#graphql
 query Query {
   Todos {
+    _id
+    title
+    description
+    status
+    dueDate
+    createdAt
+    updatedAt
+  }
+}
+`;
+
+export const TODO_DETAILS = `#graphql
+query Query($id: ID!) {
+  todoDetails(id: $id) {
     _id
     title
     description
