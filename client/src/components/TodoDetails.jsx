@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "@apollo/client";
@@ -35,6 +35,7 @@ const TodoDetails = () => {
     });
   };
 
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900 p-4">
       <div className="relative bg-gray-800/80 p-6 rounded-2xl shadow-xl border border-gray-700 backdrop-blur-lg w-96">
@@ -67,27 +68,19 @@ const TodoDetails = () => {
           </p>
         </div>
 
-        {/* Buttons Section */}
-        {/* <div className="mt-6 flex gap-3 justify-between">
-          <button
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
-            onClick={onUpdate}
-          >
-            Update
-          </button>
-          <button
-            className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition"
-            onClick={onDelete}
-          >
-            Delete
-          </button>
-          <button
-            className="flex-1 bg-gray-700 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-            onClick={() => navigate("/")}
-          >
-            Back
-          </button>
-        </div> */}
+        {/* Action Links */}
+        <div className="mt-4 flex justify-between">
+          <Link
+            href={`/todo/update/${todo.id}`}
+            className="text-blue-400 hover:underline">
+            ✏️ Update
+          </Link>
+          <Link
+            href={`/todo/delete/${todo.id}`}
+            className="text-red-400 hover:underline">
+            🗑️ Delete
+          </Link>
+        </div>
       </div>
     </div>
   );
