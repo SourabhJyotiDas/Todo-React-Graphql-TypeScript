@@ -77,8 +77,8 @@ mutation Mutation($title: String, $description: String, $id: ID!, $dueDate: Stri
 `;
 
 export const DELETE_TODO = `#graphql
-mutation DeleteTodo($deleteTodoId: ID!) {
-  deleteTodo(id: $deleteTodoId) {
+mutation DeleteTodo($id: ID!) {
+  deleteTodo(id: $id) {
     success
     message
   }
