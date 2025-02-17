@@ -4,7 +4,7 @@ type User {
   _id: ID!
   username: String!
   email: String!
-  phone:Int
+  phone:String
   status: String!
   verified: Boolean
   createdAt: String!,
@@ -49,7 +49,7 @@ type Mutation {
 
   loginUser(email: String!, password: String!): AuthPayload   # Login function
 
-  updateUserDetails(id: ID!, username: String, email: String): NormalResponse  # Update user details  //TODO
+  updateUserDetails(id: ID!, username: String, email: String, phone:String): NormalResponse  # Update user details  //TODO
 
   updateUserPassword(id: ID!, newPassword: String!): NormalResponse  # Update user password     //TODO
 
@@ -57,11 +57,11 @@ type Mutation {
 
   createNewTodo(title: String!, description: String!): NormalResponse  # Create new Todo   
 
-  deleteTodo(id: ID!): NormalResponse   # Delete a Todo     //TODO
+  deleteTodo(id: ID!): NormalResponse   # Delete a Todo
   
-  updateTodo(id: ID!, title: String, description: String, completed: Boolean,dueDate:String): NormalResponse  # Update a Todo    //TODO
+  updateTodo(id: ID!, title: String, description: String, completed: Boolean,dueDate:String): NormalResponse  # Update a Todo   
 
-  chnageTodoStatus(id: ID!,status:String): NormalResponse  # Update a Todo    //TODO
+  chnageTodoStatus(id: ID!,status:String): NormalResponse  # Update a Todo 
 }
 
 

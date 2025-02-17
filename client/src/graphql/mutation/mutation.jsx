@@ -84,3 +84,12 @@ mutation DeleteTodo($id: ID!) {
   }
 }
 `;
+
+export const UPDATE_USER_DETAILS = `#graphql
+mutation UpdateUserDetails($id: ID!, $username: String, $email: String, $phone: Int) {
+  updateUserDetails(id: $id, username: $username, email: $email, phone: $phone) {
+    success
+    message
+  }
+}
+`;

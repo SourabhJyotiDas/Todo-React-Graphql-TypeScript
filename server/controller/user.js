@@ -144,7 +144,9 @@ export const logout = (parent, args, { req, res }) => {
 
 export const updateUserDetails = async (parent, args, { req, res }) => {
    try {
-      const { username, phone, status } = args;
+      const { username, email, phone } = args;
+
+      console.log(username, email, phone)
 
       // Ensure user is authenticated (req.user is set by `authMiddleware` middleware)
       if (!req.user) {
@@ -152,15 +154,25 @@ export const updateUserDetails = async (parent, args, { req, res }) => {
       }
 
       // Update user fields
-      const updatedUser = await User.findByIdAndUpdate(
-         req.user._id,
-         { username, phone, status },
-         { new: true, runValidators: true } // Return the updated user and validate
-      );
+      const user = await User.findById(req.user._id);
 
-      if (!updatedUser) {
+      console.log(user)
+
+      if (!user) {
          throw new Error("User not found.");
       }
+
+      if (username) {
+         user.username = username;
+      }
+      if (email) {
+         user.email = email
+      }
+      if (phone) {
+         user.phone = phone
+      }
+
+      await user.save();
 
       return ({
          success: true,

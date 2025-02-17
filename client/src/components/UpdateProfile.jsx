@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AppContext } from "../context/AppContext";
+import { gql, useMutation } from "@apollo/client";
+import { UPDATE_USER_DETAILS } from "../graphql/mutation/mutation";
 
 const UpdateUserDetails = () => {
+  const { user, setUser } = useContext(AppContext);
+
+  console.log(user);
+
   const [userDetails, setUserDetails] = useState({
-    name: "",
-    email: "",
+    username: user.username,
+    email: user.email,
     phone: "",
   });
 
@@ -14,15 +21,24 @@ const UpdateUserDetails = () => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
+  const [handleUpdateProfile, { loading, data, error, reset }] = useMutation(
+    gql(UPDATE_USER_DETAILS)
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, email, phone } = userDetails;
+    e.preventDefault();
+    const { username, email, phone } = userDetails;
 
     // Basic validation
-    if (!name || !email || !phone) {
+    if (!username || !email || !phone) {
       setErrorMessage("All fields are required.");
       return;
     }
+
+    handleUpdateProfile({
+      variables: { id: user._id, username, email, phone },
+    });
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,7 +57,7 @@ const UpdateUserDetails = () => {
     // Reset messages and submit the form
     setErrorMessage("");
     setSuccessMessage("User details updated successfully!");
-    
+
     // Call API or perform the update logic here
   };
 
@@ -51,17 +67,19 @@ const UpdateUserDetails = () => {
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-100">
           Update User Details
         </h2>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-300 font-semibold mb-2" htmlFor="name">
+            <label
+              className="block text-gray-300 font-semibold mb-2"
+              htmlFor="name">
               Name
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={userDetails.name}
+              id="username"
+              name="username"
+              value={userDetails.username}
               onChange={handleChange}
               className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
@@ -69,7 +87,9 @@ const UpdateUserDetails = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-300 font-semibold mb-2" htmlFor="email">
+            <label
+              className="block text-gray-300 font-semibold mb-2"
+              htmlFor="email">
               Email
             </label>
             <input
@@ -84,7 +104,9 @@ const UpdateUserDetails = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-300 font-semibold mb-2" htmlFor="phone">
+            <label
+              className="block text-gray-300 font-semibold mb-2"
+              htmlFor="phone">
               Phone
             </label>
             <input
@@ -98,13 +120,16 @@ const UpdateUserDetails = () => {
             />
           </div>
 
-          {errorMessage && <div className="text-red-500 text-sm mb-4">{errorMessage}</div>}
-          {successMessage && <div className="text-green-500 text-sm mb-4">{successMessage}</div>}
+          {errorMessage && (
+            <div className="text-red-500 text-sm mb-4">{errorMessage}</div>
+          )}
+          {successMessage && (
+            <div className="text-green-500 text-sm mb-4">{successMessage}</div>
+          )}
 
           <button
             type="submit"
-            className="w-full cursor-pointer p-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition hover:scale-105 active:scale-95"
-          >
+            className="w-full cursor-pointer p-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition hover:scale-105 active:scale-95">
             Update Details
           </button>
         </form>
