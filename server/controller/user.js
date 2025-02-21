@@ -142,52 +142,34 @@ export const logout = (parent, args, { req, res }) => {
 
 
 
-export const updateUserDetails = async (parent, args, { req, res }) => {
+export const updateUserDetails = async (parent, args, { req }) => {
    try {
       const { username, email, phone } = args;
 
-      console.log(username, email, phone)
+      if (!req.user) throw new Error("unauthorised: Login first");
 
-      // Ensure user is authenticated (req.user is set by `authMiddleware` middleware)
-      if (!req.user) {
-         throw new Error("unauthorised: Login first");
-      }
+      const updatedUser = await User.findByIdAndUpdate(
+         req.user._id,
+         { $set: { username, email, phone } },
+         { new: true, runValidators: true }
+      );
 
-      // Update user fields
-      const user = await User.findById(req.user._id);
-
-      console.log(user)
-
-      if (!user) {
-         throw new Error("User not found.");
-      }
-
-      if (username) {
-         user.username = username;
-      }
-      if (email) {
-         user.email = email
-      }
-      if (phone) {
-         user.phone = phone
-      }
-
-      await user.save();
-
-      return ({
+      if (!updatedUser) throw new Error("unauthorised: User not found");
+      
+      return {
          success: true,
-         message: "User updated Successfully"
-      })
-
+         message: "User updated successfully",
+      };
    } catch (error) {
       throw new Error(error.message);
    }
 };
 
 
+
 export const updatePassword = async (parent, args, { req, res }) => {
    try {
-      const { oldPassword, newPassword } = req.body;
+      const { oldPassword, newPassword } = args;
 
       if (!req.user) throw new Error("unauthorised: Login first");
 

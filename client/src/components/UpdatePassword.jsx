@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import {gql,useMutation} from "@apollo/client"
+import { UPDATE_USER_PASSWORD } from "../graphql/mutation/mutation";
+import LoadingPage from "./Loader";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UpdatePassword = () => {
+  const navigate = useNavigate();
+
   const [passwords, setPasswords] = useState({
     oldPassword: "",
     newPassword: "",
@@ -8,7 +15,10 @@ const UpdatePassword = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+
+  const [handleChangePassowrd, { loading, data, error, reset }] = useMutation(
+    gql(UPDATE_USER_PASSWORD)
+  );
 
   const handleChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
@@ -36,12 +46,45 @@ const UpdatePassword = () => {
       return;
     }
 
+    handleChangePassowrd({
+      variables: { oldPassword, newPassword },
+    });
+
     // Reset messages and submit the form
     setErrorMessage("");
-    setSuccessMessage("Password updated successfully!");
-
-    // Call API or perform the update logic here
   };
+
+  
+  if (loading) return <LoadingPage />;
+
+  if (data) {
+    toast.success(data?.updateUserPassword?.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
+    navigate("/profile");
+  }
+
+  if (error) {
+    toast.error(error.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
@@ -100,7 +143,6 @@ const UpdatePassword = () => {
           </div>
 
           {errorMessage && <div className="text-red-500 text-sm mb-4">{errorMessage}</div>}
-          {successMessage && <div className="text-green-500 text-sm mb-4">{successMessage}</div>}
 
           <button
             type="submit"

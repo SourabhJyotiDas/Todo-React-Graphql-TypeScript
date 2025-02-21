@@ -15,8 +15,8 @@ export const resolver = {
     createNewUser: register,
     logoutUser: logout,
     loginUser: login,
-    updateUserPassword: updatePassword,
     updateUserDetails: updateUserDetails,
+    updateUserPassword: updatePassword,
     deleteUserAccount: deleteAccount,
 
     createNewTodo: createTodo,

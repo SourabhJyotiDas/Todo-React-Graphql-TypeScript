@@ -2,11 +2,13 @@ import React, { useContext, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { gql, useMutation } from "@apollo/client";
 import { UPDATE_USER_DETAILS } from "../graphql/mutation/mutation";
+import LoadingPage from "./Loader"
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UpdateUserDetails = () => {
+  const navigate = useNavigate();
   const { user, setUser } = useContext(AppContext);
-
-  console.log(user);
 
   const [userDetails, setUserDetails] = useState({
     username: user.username,
@@ -25,21 +27,19 @@ const UpdateUserDetails = () => {
     gql(UPDATE_USER_DETAILS)
   );
 
-  console.log(data)
-
   const handleSubmit = (e) => {
     e.preventDefault();
     e.preventDefault();
     const { username, email, phone } = userDetails;
 
     // Basic validation
-    if (!username || !email || !phone) {
+    if (!username || !email) {
       setErrorMessage("All fields are required.");
       return;
     }
 
     handleUpdateProfile({
-      variables: { id: user._id, username, email, phone },
+      variables: { username, email, phone },
     });
 
     // Email validation
@@ -49,19 +49,43 @@ const UpdateUserDetails = () => {
       return;
     }
 
-    // Phone validation (Assuming a 10-digit phone number)
-    const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(phone)) {
-      setErrorMessage("Phone number must be 10 digits.");
-      return;
-    }
-
     // Reset messages and submit the form
     setErrorMessage("");
     setSuccessMessage("User details updated successfully!");
 
     // Call API or perform the update logic here
   };
+
+  if (loading) return <LoadingPage />;
+
+  if (data) {
+    toast.success(data?.updateUserDetails?.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
+    navigate("/profile");
+  }
+
+  if (error) {
+    toast.error(error.message, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    reset();
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
@@ -118,7 +142,6 @@ const UpdateUserDetails = () => {
               value={userDetails.phone}
               onChange={handleChange}
               className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
             />
           </div>
 

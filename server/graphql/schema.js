@@ -49,9 +49,9 @@ type Mutation {
 
   loginUser(email: String!, password: String!): AuthPayload   # Login function
 
-  updateUserDetails(id: ID!, username: String, email: String, phone:String): NormalResponse  # Update user details  //TODO
+  updateUserDetails( username: String, email: String, phone:String): NormalResponse  # Update user details 
 
-  updateUserPassword(id: ID!, newPassword: String!): NormalResponse  # Update user password     //TODO
+  updateUserPassword(oldPassword:String!, newPassword: String!): NormalResponse  # Update user password
 
   deleteUserAccount: NormalResponse   # Delete user account
 
