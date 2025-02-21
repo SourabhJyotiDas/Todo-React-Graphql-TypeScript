@@ -11,7 +11,7 @@ const UpdateUserDetails = () => {
   const [userDetails, setUserDetails] = useState({
     username: user.username,
     email: user.email,
-    phone: "",
+    phone: user.phone,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,6 +24,8 @@ const UpdateUserDetails = () => {
   const [handleUpdateProfile, { loading, data, error, reset }] = useMutation(
     gql(UPDATE_USER_DETAILS)
   );
+
+  console.log(data)
 
   const handleSubmit = (e) => {
     e.preventDefault();

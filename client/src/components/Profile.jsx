@@ -117,6 +117,7 @@ export default function Profile() {
             @{user?.username.toLowerCase().replace(/\s/g, "")}
           </p>
           <p className="mt-2 text-gray-300">{user?.email}</p>
+          <p className="mt-2 text-gray-300">📞 {user?.phone}</p>
         </div>
 
         {/* Buttons */}
