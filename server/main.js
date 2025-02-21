@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors"
 import { connectToDatabase } from "./config/database.js";
 import { connectGraphQl } from "./graphql/server.js";
-import {authMiddleware} from "./middleware/checkAuth.js"
+import { authMiddleware } from "./middleware/checkAuth.js"
 import { config } from "dotenv";
 config({ path: "./config/.env" });
 
@@ -14,18 +14,22 @@ const startServer = async () => {
 
   const app = express();
   connectToDatabase()
-  
+
   app.use(cors({
     origin: 'http://localhost:5173', // Allow only your frontend domain
     credentials: true, // ✅ Allow cookies in cross-origin requests
   }));
-  
+
   app.use(express.json());
   app.use(cookieParser());
 
-  
+
   const server = connectGraphQl();
   await server.start();
+
+  app.use("/", (req, res) => {
+    res.json({ message: "API is working fine!" });
+  });
 
   app.use(
     "/graphql",
