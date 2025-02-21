@@ -8,15 +8,13 @@ import { authMiddleware } from "./middleware/checkAuth.js"
 import { config } from "dotenv";
 config({ path: "./config/.env" });
 
-const PORT = process.env.PORT
-
 const startServer = async () => {
 
   const app = express();
   connectToDatabase()
 
   app.use(cors({
-    origin: 'http://localhost:5173', // Allow only your frontend domain
+    origin: process.env.FRONTEND_URL, // Allow only your frontend domain
     credentials: true, // ✅ Allow cookies in cross-origin requests
   }));
 
@@ -39,8 +37,8 @@ const startServer = async () => {
     })
   );
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`);
   });
 };
 
