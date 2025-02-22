@@ -10,8 +10,8 @@ import "./index.css";
 import { AppProvider } from "./context/AppContext";
 
 const httpLink = createHttpLink({
-  // uri: "http://localhost:5000/",
-  uri: "http://localhost:5000/graphql",
+  // uri: "http://localhost:5000/graphql",
+  uri: "https://todo-react-graphql-type-script.vercel.app/graphql",
   credentials: "include", // ✅ Required for cookies
 });
 
