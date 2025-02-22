@@ -25,9 +25,7 @@ const startServer = async () => {
   const server = connectGraphQl();
   await server.start();
 
-  app.use("/", (req, res) => {
-    res.json({ message: "API is working fine!" });
-  });
+
 
   app.use(
     "/graphql",
@@ -36,6 +34,10 @@ const startServer = async () => {
       context: async ({ req, res }) => ({ req, res }), // ✅ Pass `req` and `res`
     })
   );
+
+  app.use("/", (req, res) => {
+    res.json({ message: "API is working fine!" });
+  });
 
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`);

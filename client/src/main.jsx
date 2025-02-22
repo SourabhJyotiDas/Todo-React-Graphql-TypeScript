@@ -10,6 +10,7 @@ import "./index.css";
 import { AppProvider } from "./context/AppContext";
 
 const httpLink = createHttpLink({
+  // uri: "http://localhost:5000/",
   uri: "http://localhost:5000/graphql",
   credentials: "include", // ✅ Required for cookies
 });
